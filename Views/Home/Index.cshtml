@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    //List<SelectListItem> items = (List<SelectListItem>)ViewBag.items;
+    List<SelectListItem> items = (List<SelectListItem>)ViewBag.empleadoItems;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to WebServices</h1>
+</div>
+<div class="row">
+    <div class="form-group">
+        @Html.DropDownList("ddlEmpleados", items, "--Seleccionar una opcion--", new {@class="form-control"})
+        <br />
+        @Html.DropDownList("ddlRoles", new List<SelectListItem>(), "--Seleccionar una opcion--", new {@class="form-control"})
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+        $("#ddlEmpleados").ready(function() {
+            $.get("/Home/GetRolesList", { RolesId: $("#ddlEmpleados").val() }, function (data) {
+                // VACIAMOS EL DropDownList
+                $("#ddlRoles").empty();
+                // AÑADIMOS UN NUEVO label CON EL NOMBRE DEL ELEMENTO SELECCIONADO
+                $("#ddlRoles").append("<option value> -- Seleccionar Roles de " + $("#ddlREmpleados option:selected").text() + " --</option>")
+                // CONSTRUIMOS EL DropDownList A PARTIR DEL RESULTADO Json (data)
+                $.each(data, function (index, row) {
+                    $("#ddlRoles").append("<option value='" + row.RolId + "'>" + row.Descripcion + "</option>")
+                });
+            });
+        });
+    </script>
+}
